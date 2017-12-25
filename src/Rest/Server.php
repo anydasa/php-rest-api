@@ -46,11 +46,13 @@ class Server
         try {
             $route = $this->router->getCurrentRoute();
             $this->securityHandler->handle($route);
+            $requestParams = $route->getParams();
+
 
             $this->response->send(200, [
                 'code'    => 200,
                 'message' => 'OK',
-                'content' =>  $route->dispatch()
+                'content' =>  $route->dispatch($requestParams)
             ]);
         } catch (HttpException $e) {
             $this->response->send($e->getStatusCode(), [

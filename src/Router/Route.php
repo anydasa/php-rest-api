@@ -10,6 +10,7 @@ class Route
     private $methods;
     private $controller;
     private $action;
+    private $params = [];
 
     public function __construct(array $config)
     {
@@ -57,11 +58,65 @@ class Route
         return $this->action;
     }
 
-    public function dispatch()
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    public function match($requestUrl)
+    {
+        $route = preg_replace('/:([\w]+)/', '([\w-%]+)', $this->getUrl());
+        $pattern = '@^' . $route . '/?$@i';
+
+
+        if (!preg_match($pattern, $requestUrl, $matches)) {
+            return false;
+        }
+
+        if (count($matches) === 1) {
+            return true;
+        }
+
+        if (preg_match_all('/:([\w-%]+)/', $this->getUrl(), $argument_keys)) {
+
+            if(count($argument_keys[1]) !== (count($matches)-1)) {
+                return false;
+            }
+
+            $this->params = array_combine(
+                $argument_keys[1],
+                array_slice($matches, 1)
+            );
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function dispatch($params = [])
     {
         $class = "\\Controller\\{$this->controller}";
-        $controller = new $class();
 
-        return $controller->{$this->action}();
+        if (!class_exists($class)) {
+            throw new \Exception('Controller not found');
+        }
+
+        $controller = new $class();
+        $action = $this->action.'Action';
+
+        if (!method_exists($class, $action)) {
+            throw new \Exception('Action not found');
+        }
+
+        $reflectionMethod = new \ReflectionMethod($class, $action);
+
+        $arrangedParams = array_map(function ($parameter) use ($params) {
+            $param = $parameter->getName();
+            return array_key_exists($param, $params) ? $params[$param] : null;
+        }, $reflectionMethod->getParameters());
+        
+
+        return $reflectionMethod->invokeArgs($controller, $arrangedParams);
     }
 }

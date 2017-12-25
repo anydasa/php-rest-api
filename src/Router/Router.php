@@ -3,12 +3,18 @@
 namespace Router;
 
 
+use Exception\MethodNotAllowedHttpException;
 use Exception\NotFoundHttpException;
 
 class Router
 {
+    /** @var RouteCollection  */
     private $routeCollection;
 
+    /**
+     * Router constructor.
+     * @param RouteCollection $routeCollection
+     */
     public function __construct(RouteCollection $routeCollection)
     {
         $this->routeCollection = $routeCollection;
@@ -16,6 +22,7 @@ class Router
 
     /**
      * @return Route
+     * @throws MethodNotAllowedHttpException
      * @throws NotFoundHttpException
      */
     public function getCurrentRoute(): Route
@@ -30,15 +37,22 @@ class Router
      * @param $requestUrl
      * @param $requestMethod
      * @return Route
+     * @throws MethodNotAllowedHttpException
      * @throws NotFoundHttpException
      */
     public function match($requestUrl, $requestMethod): Route
     {
         /** @var Route $route */
         foreach ($this->routeCollection as $route) {
-            if (!in_array(strtoupper($requestMethod), $route->getMethods())) {
+
+            if (!$route->match($requestUrl)) {
                 continue;
             }
+
+            if (!in_array(strtoupper($requestMethod), $route->getMethods())) {
+                throw new MethodNotAllowedHttpException($route->getMethods(), 'Method Not Allowed');
+            }
+
             return $route;
         }
 

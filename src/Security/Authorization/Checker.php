@@ -31,7 +31,7 @@ class Checker
     public function isGranted(Route $route, User $user)
     {
         foreach ($this->config->toArray() as $accessItem) {
-            $pattern = '@^' . $accessItem['path'] . '/?$@i';
+            $pattern = '@^' . $accessItem['path'] . '@i';
 
             if (!preg_match($pattern, $route->getUrl())) {
                 continue;

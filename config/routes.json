@@ -4,5 +4,17 @@
     "controller": "Index",
     "action": "index",
     "methods": ["get"]
+  },
+  "getUserList": {
+    "route": "/users",
+    "controller": "User",
+    "action": "list",
+    "methods": ["get"]
+  },
+  "getUserById": {
+    "route": "/users/:id",
+    "controller": "User",
+    "action": "getUserById",
+    "methods": ["get"]
   }
 }

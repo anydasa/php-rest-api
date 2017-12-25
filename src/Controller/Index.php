@@ -5,10 +5,8 @@ namespace Controller;
 
 class Index
 {
-    public function index()
+    public function indexAction()
     {
-        return [
-            11
-        ];
+        return 'Hello world';
     }
 }
