@@ -2,11 +2,11 @@
   {
     "username": "admin",
     "password": "$2y$10$27tmIvsES/1Eof1fFn2AMO0UCSgzMf6UsaWmmr80S5nooj3bkPATS",
-    "roles": ["ADMIN"]
+    "roles": ["ADMIN", "ANONYMOUS"]
   },
   {
     "username": "user",
     "password": "$2y$10$Z4.FJuIaxYaG9WPDBj5oAO.OAyezkhlAcXUDbdXJWImNRtnHwIi.i",
-    "roles": ["USER"]
+    "roles": ["USER", "ANONYMOUS"]
   }
 ]
