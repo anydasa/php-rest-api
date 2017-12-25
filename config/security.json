@@ -1,5 +1,9 @@
 [
   {
+    "path": "/user*",
+    "roles": ["ADMIN"]
+  },
+  {
     "path": "/*",
     "roles": ["ANONYMOUS"]
   }

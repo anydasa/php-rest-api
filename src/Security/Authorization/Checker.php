@@ -37,11 +37,11 @@ class Checker
                 continue;
             }
 
-            if (count(array_intersect($user->getRoles(), $accessItem['roles'])) > 0) {
-                return true;
+            if (count(array_intersect($user->getRoles(), $accessItem['roles'])) == 0) {
+                throw new ForbiddenHttpException('Forbidden');
             }
         }
         
-        throw new ForbiddenHttpException('Forbidden');
+        return true;
     }
 }
