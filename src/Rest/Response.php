@@ -13,6 +13,8 @@ class Response
             header(sprintf('%s: %s', $key, $value));
         }
 
+        header('Content-Type: application/json');
+
         echo json_encode($data);
     }
 }
