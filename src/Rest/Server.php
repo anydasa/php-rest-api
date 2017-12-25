@@ -55,10 +55,11 @@ class Server
                 'content' =>  $route->dispatch($requestParams)
             ]);
         } catch (HttpException $e) {
-            $this->response->send($e->getStatusCode(), [
-                'code'    => $e->getStatusCode(),
-                'message' => $e->getMessage()
-            ]);
+            $this->response->send(
+                $e->getStatusCode(),
+                ['code' => $e->getStatusCode(), 'message' => $e->getMessage()],
+                $e->getHeaders()
+            );
         } catch (\Exception $e) {
             $this->response->send(500, [
                 'code'    => 500,
