@@ -2,6 +2,7 @@
 
 namespace Rest;
 
+
 use Exception\HttpException;
 use Router\{RouteCollection, Router};
 use Config\File\Factory as ConfigFactory;
@@ -21,8 +22,13 @@ class Server
     /** @var SecurityHandler  */
     private $securityHandler;
 
+    /** @var string */
     private $configDir;
 
+    /**
+     * Server constructor.
+     * @param $configDir
+     */
     public function __construct($configDir)
     {
         $this->configDir = $configDir;
@@ -32,26 +38,39 @@ class Server
         $this->configureSecurity();
     }
 
+    /**
+     *
+     */
     public function run()
     {
         try {
             $route = $this->router->getCurrentRoute();
-
             $this->securityHandler->handle($route);
 
-            $content = $route->dispatch();
-
             $this->response->setStatus(200);
-            $this->response->send(['code' => 200, 'message' => 'OK', 'content' => $content]);
+            $this->response->send([
+                'code'    => 200,
+                'message' => 'OK',
+                'content' =>  $route->dispatch()
+            ]);
         } catch (HttpException $e) {
             $this->response->setStatus($e->getStatusCode());
-            $this->response->send(['code' => $e->getStatusCode(), 'message' => $e->getMessage()]);
+            $this->response->send([
+                'code'    => $e->getStatusCode(),
+                'message' => $e->getMessage()
+            ]);
         } catch (\Exception $e) {
             $this->response->setStatus(500);
-            $this->response->send(['code' => 500, 'message' => 'Internal Server Error']);
+            $this->response->send([
+                'code'    => 500,
+                'message' => 'Internal Server Error'
+            ]);
         }
     }
 
+    /**
+     *
+     */
     private function configureRouter()
     {
         $configFile = $this->configDir . 'routes.json';
@@ -60,6 +79,9 @@ class Server
         $this->router = new Router($routeCollection);
     }
 
+    /**
+     *
+     */
     private function configureSecurity()
     {
         $configFileUsers = $this->configDir . 'users.json';
@@ -74,6 +96,4 @@ class Server
 
         $this->securityHandler = new SecurityHandler($authProvider, $securityChecker);
     }
-
-
 }
