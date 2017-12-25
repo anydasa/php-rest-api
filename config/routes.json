@@ -1,0 +1,8 @@
+{
+  "index": {
+    "route": "/",
+    "controller": "Index",
+    "action": "index",
+    "methods": ["get"]
+  }
+}

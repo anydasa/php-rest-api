@@ -1,0 +1,6 @@
+[
+  {
+    "path": "/*",
+    "roles": ["ANONYMOUS"]
+  }
+]
