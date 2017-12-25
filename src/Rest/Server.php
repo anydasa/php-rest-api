@@ -47,21 +47,18 @@ class Server
             $route = $this->router->getCurrentRoute();
             $this->securityHandler->handle($route);
 
-            $this->response->setStatus(200);
-            $this->response->send([
+            $this->response->send(200, [
                 'code'    => 200,
                 'message' => 'OK',
                 'content' =>  $route->dispatch()
             ]);
         } catch (HttpException $e) {
-            $this->response->setStatus($e->getStatusCode());
-            $this->response->send([
+            $this->response->send($e->getStatusCode(), [
                 'code'    => $e->getStatusCode(),
                 'message' => $e->getMessage()
             ]);
         } catch (\Exception $e) {
-            $this->response->setStatus(500);
-            $this->response->send([
+            $this->response->send(500, [
                 'code'    => 500,
                 'message' => 'Internal Server Error'
             ]);

@@ -5,12 +5,9 @@ namespace Rest;
 
 class Response
 {
-    public function setStatus($code) {
-        http_response_code($code);
-    }
-
-    public function send($data = [])
+    public function send($code, $data = [])
     {
+        http_response_code($code);
         echo json_encode($data);
     }
 }
