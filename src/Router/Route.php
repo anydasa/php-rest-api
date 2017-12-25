@@ -57,10 +57,11 @@ class Route
         return $this->action;
     }
 
-    /*public function dispatch()
+    public function dispatch()
     {
         $class = "\\Controller\\{$this->controller}";
         $controller = new $class();
-        $controller->{$this->action}();
-    }*/
+
+        return $controller->{$this->action}();
+    }
 }

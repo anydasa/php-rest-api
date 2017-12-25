@@ -2,10 +2,13 @@
 
 namespace Rest;
 
-use Router\Route;
-use Router\Router;
-use Security\Authentication\Provider\UnauthorizedException;
+use Exception\HttpException;
+use Router\{RouteCollection, Router};
+use Config\File\Factory as ConfigFactory;
 use Security\Handler as SecurityHandler;
+use Security\Authentication\Storage\File as AuthStorage;
+use Security\Authentication\Provider\BasicAuth as AuthProvider;
+use Security\Authorization\Checker as AuthorizationChecker;
 
 class Server
 {
@@ -18,47 +21,59 @@ class Server
     /** @var SecurityHandler  */
     private $securityHandler;
 
-    public function __construct(Router $router, SecurityHandler $securityHandler)
+    private $configDir;
+
+    public function __construct($configDir)
     {
-        $this->router = $router;
-        $this->securityHandler = $securityHandler;
+        $this->configDir = $configDir;
         $this->response = new Response();
+
+        $this->configureRouter();
+        $this->configureSecurity();
     }
 
-    public function dispatch()
+    public function run()
     {
         try {
-            $route = $this->matchRoute();
-            $this->handleSecurityRoute($route);
+            $route = $this->router->getCurrentRoute();
 
-        } catch (RestException $e) {
-            $this->response->setStatus($e->getCode());
-            $this->response->send(['code' => $e->getCode(), 'message' => $e->getMessage()]);
-        }
-    }
-
-    private function matchRoute()
-    {
-        $url = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
-        $method = $_SERVER['REQUEST_METHOD'];
-
-        if ($route = $this->router->match($url, $method)) {
-            return $route;
-        }
-
-        throw new RestException(404, 'Not Found');
-    }
-
-    private function handleSecurityRoute(Route $route)
-    {
-        try {
             $this->securityHandler->handle($route);
-        } catch (UnauthorizedException $e) {
-            throw new RestException(401, $e->getMessage());
-        }
 
+            $content = $route->dispatch();
+
+            $this->response->setStatus(200);
+            $this->response->send(['code' => 200, 'message' => 'OK', 'content' => $content]);
+        } catch (HttpException $e) {
+            $this->response->setStatus($e->getStatusCode());
+            $this->response->send(['code' => $e->getStatusCode(), 'message' => $e->getMessage()]);
+        } catch (\Exception $e) {
+            $this->response->setStatus(500);
+            $this->response->send(['code' => 500, 'message' => 'Internal Server Error']);
+        }
     }
 
+    private function configureRouter()
+    {
+        $configFile = $this->configDir . 'routes.json';
+        $config = ConfigFactory::file($configFile, 'json');
+        $routeCollection = new RouteCollection($config);
+        $this->router = new Router($routeCollection);
+    }
+
+    private function configureSecurity()
+    {
+        $configFileUsers = $this->configDir . 'users.json';
+        $configFileSecurity = $this->configDir . 'security.json';
+
+        $usersConfig = ConfigFactory::file($configFileUsers, 'json');
+        $authStorage = new AuthStorage($usersConfig);
+        $authProvider = new AuthProvider($authStorage);
+
+        $securityConfig = ConfigFactory::file($configFileSecurity, 'json');
+        $securityChecker = new AuthorizationChecker($securityConfig);
+
+        $this->securityHandler = new SecurityHandler($authProvider, $securityChecker);
+    }
 
 
 }
