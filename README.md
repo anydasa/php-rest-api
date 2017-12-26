@@ -12,6 +12,10 @@ docker-compose up -d
 php -S localhost:80 public/index.php
 ```
 
+#### Resource not found
+```
+curl -u admin:admin http://localhost/blabla -v
+```
 
 #### Not Allowed Method
 ```
@@ -19,11 +23,15 @@ curl -u admin:admin -X POST http://localhost -v
 ```
 #### Unauthorized
 ```
-curl -u blabla:blabla http://localhost -v
+curl -u blabla:blabla http://localhost/users -v
 ```
 
-#### Unauthorized
+#### GET users list
 ```
-curl -u blabla:blabla http://localhost -v
+curl -u admin:admin http://localhost/users -v
 ```
 
+#### GET a user
+```
+curl -u admin:admin http://localhost/users/1 -v
+```
