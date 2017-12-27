@@ -6,17 +6,33 @@ use InvalidArgumentException;
 
 class Route
 {
+    /** @var string */
     private $url;
+
+    /** @var string */
     private $methods;
+
+    /** @var string */
     private $controller;
+
+    /** @var string */
     private $action;
+
+    /** @var array  */
     private $params = [];
 
+    /**
+     * Route constructor.
+     * @param array $config
+     */
     public function __construct(array $config)
     {
         $this->setConfig($config);
     }
 
+    /**
+     * @param array $config
+     */
     public function setConfig(array $config)
     {
         if (!array_key_exists('route', $config)) {
@@ -38,31 +54,50 @@ class Route
         $this->action     = $config['action'];
     }
 
+    /**
+     * @return string
+     */
     public function getUrl()
     {
         return $this->url;
     }
 
+    /**
+     * @return string
+     */
     public function getMethods()
     {
         return $this->methods;
     }
 
+    /**
+     * @return string
+     */
     public function getController()
     {
         return $this->controller;
     }
 
+    /**
+     * @return string
+     */
     public function getAction()
     {
         return $this->action;
     }
 
+    /**
+     * @return array
+     */
     public function getParams()
     {
         return $this->params;
     }
 
+    /**
+     * @param string $requestUrl
+     * @return bool
+     */
     public function match($requestUrl)
     {
         $route = preg_replace('/:([\w]+)/', '([\w-%]+)', $this->getUrl());
@@ -94,6 +129,11 @@ class Route
         return false;
     }
 
+    /**
+     * @param array $params
+     * @return mixed
+     * @throws \Exception
+     */
     public function dispatch($params = [])
     {
         $class = "\\Controller\\{$this->controller}";

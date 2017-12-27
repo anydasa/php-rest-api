@@ -7,5 +7,8 @@ use Security\Authentication\User;
 
 interface ProviderInterface
 {
+    /**
+     * @return User
+     */
     public function authenticate(): User;
 }

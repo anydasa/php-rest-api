@@ -5,12 +5,17 @@ namespace Security\Authentication;
 
 class User
 {
+    /** @var string */
     private $username;
+
+    /** @var string */
     private $password;
+
+    /** @var array  */
     private $roles = [];
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getUsername()
     {
@@ -18,7 +23,7 @@ class User
     }
 
     /**
-     * @param mixed $username
+     * @param string $username
      */
     public function setUsername($username): void
     {
@@ -26,7 +31,7 @@ class User
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getPassword()
     {
@@ -34,7 +39,7 @@ class User
     }
 
     /**
-     * @param mixed $password
+     * @param string $password
      */
     public function setPassword($password): void
     {

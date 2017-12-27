@@ -6,10 +6,19 @@ use Exception;
 
 class HttpException extends Exception {
 
+    /** @var int */
     private $statusCode;
+
+    /** @var array  */
     private $headers;
 
-    public function __construct($statusCode, $message = null, array $headers = array())
+    /**
+     * HttpException constructor.
+     * @param $statusCode
+     * @param null|string $message
+     * @param array $headers
+     */
+    public function __construct($statusCode, $message = null, array $headers = [])
     {
         $this->statusCode = $statusCode;
         $this->headers = $headers;
@@ -17,17 +26,25 @@ class HttpException extends Exception {
         parent::__construct($message);
     }
 
+    /**
+     * @return int
+     */
     public function getStatusCode()
     {
         return $this->statusCode;
     }
 
+    /**
+     * @return array
+     */
     public function getHeaders()
     {
         return $this->headers;
     }
 
-
+    /**
+     * @param array $headers
+     */
     public function setHeaders(array $headers)
     {
         $this->headers = $headers;

@@ -2,12 +2,18 @@
 
 namespace Config\File;
 
+use Config\ConfigInterface;
 use InvalidArgumentException;
 use DomainException;
 
 class Factory
 {
-    public static function file($file, $type)
+    /**
+     * @param $file
+     * @param $type
+     * @return ConfigInterface
+     */
+    public static function file($file, $type): ConfigInterface
     {
         if (!is_file($file)) {
             throw new InvalidArgumentException(sprintf('The file %s not exists!', $file));

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: anydasa
- * Date: 12/24/17
- * Time: 8:29 PM
- */
 
 namespace Security\Authentication\Storage;
 
@@ -14,13 +8,22 @@ use Security\Authentication\User;
 
 class File implements StorageInterface
 {
+    /** @var array */
     private $users;
 
+    /**
+     * File constructor.
+     * @param ConfigInterface $config
+     */
     public function __construct(ConfigInterface $config)
     {
         $this->users = $config->toArray();
     }
 
+    /**
+     * @param $username
+     * @return null|User
+     */
     public function findUserByUsername($username):? User
     {
         foreach ($this->users as $user) {

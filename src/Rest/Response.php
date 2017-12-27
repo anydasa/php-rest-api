@@ -5,6 +5,11 @@ namespace Rest;
 
 class Response
 {
+    /**
+     * @param int $code
+     * @param array $data
+     * @param array $headers
+     */
     public function send($code, $data = [], $headers = [])
     {
         http_response_code($code);
